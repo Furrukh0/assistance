@@ -177,6 +177,7 @@ export class ListComponent {
   }
   openModal(content: any) {
     this.submitted = false;
+    this.ordersForm.reset();
     this.getUserList();
     this.modalService.open(content, { size: 'lg', centered: true });
   }
@@ -217,7 +218,7 @@ export class ListComponent {
     this.removeUnusedControls();
     console.log(this.ordersForm.value)
     if (this.ordersForm.valid) {
-      this.enableDisabledControls();
+      // this.enableDisabledControls();
       if (this.ordersForm.get('id')?.value) {
         const updatedData = this.ordersForm.value;
         this.store.dispatch(updateTicket({ updatedData }));
@@ -245,6 +246,7 @@ export class ListComponent {
         // });
       }
     }
+     this.enableDisabledControls();
     setTimeout(() => {
       this.store.dispatch(fetchTicketListData());
     }, 2000);
