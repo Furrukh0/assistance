@@ -1,0 +1,14 @@
+//
+// forms.scss
+//
+
+:is([type="tel"], [type="url"], [type="email"], [type="number"]){
+    &::placeholder {
+        text-align: left /*rtl: right*/;
+    }
+}
+
+/*  Special case override for password and conform password field */
+.form-control.is-invalid.custom-invalid {
+  background-position: right calc(1.375em + 1.25rem) center;
+}

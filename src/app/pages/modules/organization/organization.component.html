@@ -1,0 +1,271 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Organizations</h4>
+                <div class="flex-shrink-0">
+                    <div class="hstack gap-3 flex-wrap">
+                        <a href="javascript:void(0);" (click)="openAddOrganizationModal(AddOrganization)"
+                            class="btn btn-success btn-sm">
+                            <i class="ri-add-line align-bottom me-1"></i> Add Organization
+                        </a>
+                        <a href="javascript:void(0);" class="btn btn-light btn-sm" (click)="toggleFilters()">
+                            <i class="ri-filter-line align-bottom me-1"></i> Filters
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @if(showFilters){
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <!-- Search -->
+                    <div class="col-md-6">
+                        <div class="search-box">
+                            <input type="text" class="form-control" placeholder="Search by name, email or address..."
+                                [(ngModel)]="searchText" (keyup)="onSearchChanged($event)" />
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Filter dropdown -->
+                    <div class="col-md-3 ms-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-light border d-flex justify-content-between align-items-center w-100" type="button"
+                                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ selectedFilterLabel }}
+                                <span class="dropdown-toggle ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="filterDropdown">
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged('')">All</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged('true')">Active</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged('false')">Inactive</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Reset button -->
+                    <div class="col-md-2 text-end">
+                        <button class="btn btn-light  w-100" (click)="resetFilters()">
+                            <i class="ri-filter-off-line align-bottom me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            }
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="table-responsive mt-4 mt-xl-0">
+                                <table class="table table-hover table-striped align-middle table-nowrap mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Phone</th>
+                                            <th scope="col">Address</th>
+                                            <th scope="col">Active</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(Organization && Organization.length > 0) {
+                                        @for(org of Organization;track org; let i = $index){
+                                        <tr>
+                                            <td class="fw-medium">{{i + 1}}</td>
+                                            <td>{{org?.name}}</td>
+                                            <td>{{org?.code}}</td>
+                                            <td>{{org?.email}}</td>
+                                            <td>{{org?.phone}}</td>
+                                            <td>{{org?.address}}</td>
+                                            <td>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        id="SwitchCheck1" [checked]="org?.isActive"
+                                                        (change)="toggleOrganizationStatus(org)">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="hstack gap-3 flex-wrap">
+                                                    <a href="javascript:void(0);" class="link-success fs-15"
+                                                        (click)="openEditOrganizationModal(AddOrganization, org)"><i
+                                                            class="ri-edit-2-line"></i></a>
+                                                    <a href="javascript:void(0);" class="link-danger fs-15"
+                                                        (click)="openDeleteModal(confirmDelete, org)"><i
+                                                            class="ri-delete-bin-line"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        }
+                                        } @else {
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                No organizations found.
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!--end col-->
+
+                        @if(Organization && Organization.length > 0) {
+                        <app-pagination [pageNumber]="pageNumber" [totalPages]="totalPages"
+                            (pageChange)="changePage($event)">
+                        </app-pagination>
+                        }
+
+                    </div><!--end row-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #AddOrganization let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                {{ isEditMode ? 'Update Organization' : 'Add Organization' }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                (click)="modal.dismiss('Cross click')"></button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="organizationForm" (ngSubmit)="onSubmit()">
+                <div class="row g-3">
+
+                    <!-- Name -->
+                    <div class="col-xxl-6">
+                        <label for="orgName" class="form-label">Organization Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" id="orgName" class="form-control" formControlName="name"
+                            placeholder="Enter name"
+                            [ngClass]="{ 'is-invalid': hasError('name','required') || hasError('name','minlength') }">
+
+                        @if (hasError('name','required')) {
+                        <div class="invalid-feedback">Name is required</div>
+                        }
+                        @if (hasError('name','minlength')) {
+                        <div class="invalid-feedback">Minimum 3 characters</div>
+                        }
+                    </div>
+
+                    <!-- Code -->
+                    <div class="col-xxl-6">
+                        <label for="orgCode" class="form-label">Organization Code <span
+                                class="text-danger">*</span></label>
+                        <input type="text" id="orgCode" class="form-control" formControlName="code"
+                            placeholder="Enter code" [ngClass]="{ 'is-invalid': hasError('code','required') }">
+
+                        @if (hasError('code','required')) {
+                        <div class="invalid-feedback">Code is required</div>
+                        }
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-xxl-6">
+                        <label for="orgEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" id="orgEmail" class="form-control" formControlName="email"
+                            placeholder="Enter email"
+                            [ngClass]="{ 'is-invalid': hasError('email','required') || hasError('email','email') }">
+
+                        @if (hasError('email','required')) {
+                        <div class="invalid-feedback">Email is required</div>
+                        }
+                        @if (hasError('email','email')) {
+                        <div class="invalid-feedback">Invalid email format</div>
+                        }
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-xxl-6">
+                        <label for="orgPhone" class="form-label">Phone <span class="text-danger">*</span></label>
+                        <input type="text" id="orgPhone" class="form-control" formControlName="phone"
+                            placeholder="Enter phone"
+                            [ngClass]="{ 'is-invalid': hasError('phone','required') || hasError('phone','pattern') }">
+
+                        @if (hasError('phone','required')) {
+                        <div class="invalid-feedback">Phone is required</div>
+                        }
+                        @if (hasError('phone','pattern')) {
+                        <div class="invalid-feedback">Invalid phone number (must be 10 digits)</div>
+                        }
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-12">
+                        <label for="orgAddress" class="form-label">Address <span class="text-danger">*</span></label>
+                        <textarea id="orgAddress" class="form-control" rows="2" formControlName="address"
+                            placeholder="Enter address"
+                            [ngClass]="{ 'is-invalid': hasError('address','required') || hasError('address','minlength') }"></textarea>
+
+                        @if (hasError('address','required')) {
+                        <div class="invalid-feedback">Address is required</div>
+                        }
+                        @if (hasError('address','minlength')) {
+                        <div class="invalid-feedback">At least 5 characters</div>
+                        }
+                    </div>
+
+                    <!-- Active -->
+                    <div class="col-12">
+                        <label class="form-label">Active</label>
+                        <div class="form-check form-switch">
+                            <input type="checkbox" class="form-check-input" formControlName="isActive" id="orgActive">
+                            <label for="orgActive" class="form-check-label">
+                                {{ organizationForm.get('isActive')?.value ? 'Active' : 'Inactive' }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">
+                                {{ isEditMode ? 'Update' : 'Submit' }}
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</ng-template>
+
+
+<ng-template #confirmDelete let-modal>
+    <div class="modal-body text-center p-5">
+        <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+            colors="primary:#121331,secondary:#f06548" style="width:120px;height:120px">
+        </lord-icon>
+
+        <div class="mt-4">
+            <h4 class="mb-3">Are you sure?</h4>
+            <p class="text-muted mb-4">
+                Do you really want to delete <b>{{ orgToDelete?.name }}</b>?
+                This process cannot be undone.
+            </p>
+
+            <div class="hstack gap-2 justify-content-center">
+                <button type="button" class="btn btn-light" (click)="modal.dismiss()">Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="deleteOrganization(modal)">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>

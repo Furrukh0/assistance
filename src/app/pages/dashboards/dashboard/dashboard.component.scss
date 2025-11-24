@@ -1,0 +1,17 @@
+.table-responsive.table-card {
+  scrollbar-width: thin;
+  scrollbar-color: #e0e0e0 transparent; // Light gray thumb, transparent track
+
+  /* For Webkit browsers */
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #e0e0e0; // Light gray
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

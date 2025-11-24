@@ -1,0 +1,185 @@
+<!-- start contact -->
+<section class="section" id="contact">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h3 class="mb-3 fw-semibold">Get In Touch</h3>
+                    <p class="text-muted mb-4 ff-secondary">We're here to help you get the most out of Call Mining.
+                        Whether you have a question about our platform, need technical support, or want to schedule a
+                        demo, feel free to reach out.
+                        Contact Details.</p>
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+
+        <div class="row gy-4">
+            <div class="col-lg-4">
+                <div>
+                    <div class="mt-4">
+                        <h5 class="fs-13 text-muted text-uppercase">Office Address:</h5>
+                        <div class="ff-secondary fw-semibold"> 221-22 B Bahria Town,<br /> Lahore, Punjab, Pakistan
+                        </div>
+                    </div>
+                    <!-- <div class="mt-4">
+                        <h5 class="fs-13 text-muted text-uppercase">Office Address 2:</h5>
+                        <div class="ff-secondary fw-semibold">2467 Swick Hill Street <br />New Orleans, LA</div>
+                    </div> -->
+                    <div class="mt-4">
+                        <h5 class="fs-13 text-muted text-uppercase">email:</h5>
+                        <div class="ff-secondary fw-semibold">support&#64;callmining.com
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h5 class="fs-13 text-muted text-uppercase">Working Hours:</h5>
+                        <div class="ff-secondary fw-semibold">12:00am to 12:00pm (24/7)</div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col -->
+            <div class="col-lg-8">
+                <div>
+                    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Name</label>
+                                <input formControlName="requesterName" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['requesterName'].errors}"
+                                    placeholder="Your name*">
+                                <div *ngIf="submitted && f['requesterName'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['requesterName'].errors['required']">Name is required</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input formControlName="requesterEmail" type="email" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['requesterEmail'].errors}"
+                                    placeholder="Your email*">
+                                <div *ngIf="submitted && f['requesterEmail'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['requesterEmail'].errors['required']">Email is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Phone</label>
+                                <input formControlName="requesterPhone" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['requesterPhone'].errors}"
+                                    placeholder="Your phone*">
+                                <div *ngIf="submitted && f['requesterPhone'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['requesterPhone'].errors['required']">Phone is required</div>
+                                    <div *ngIf="f['requesterPhone'].errors['pattern']">Enter valid phone number (10–15
+                                        digits)</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Organization</label>
+                                <input formControlName="organizationName" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['organizationName'].errors}"
+                                    placeholder="Organization">
+                                <div *ngIf="submitted && f['organizationName'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['organizationName'].errors['required']">Organization is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Status</label>
+                                <input formControlName="status" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['status'].errors}" placeholder="Status">
+                                <div *ngIf="submitted && f['status'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['status'].errors['required']">Status is required</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Assigned To</label>
+                                <input formControlName="assignedTo" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['assignedTo'].errors}"
+                                    placeholder="Assigned To">
+                                <div *ngIf="submitted && f['assignedTo'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['assignedTo'].errors['required']">Assigned To is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Meeting Link</label>
+                                <input formControlName="meetingLink" type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['meetingLink'].errors}"
+                                    placeholder="Meeting link">
+                                <div *ngIf="submitted && f['meetingLink'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['meetingLink'].errors['required']">Meeting link is required</div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <label class="form-label">Remarks</label>
+                                <textarea formControlName="remarks" rows="3" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['remarks'].errors}"
+                                    placeholder="Remarks..."></textarea>
+                                <div *ngIf="submitted && f['remarks'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['remarks'].errors['required']">Remarks are required</div>
+                                    <div *ngIf="f['remarks'].errors['minlength']">Remarks must be at least 10 characters
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Requested Date</label>
+                                <input formControlName="requestedDate" type="date" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['requestedDate'].errors}">
+                                <div *ngIf="submitted && f['requestedDate'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['requestedDate'].errors['required']">Requested Date is required</div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <label class="form-label">Scheduled Date</label>
+                                <input formControlName="scheduledDate" type="date" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['scheduledDate'].errors}">
+                                <div *ngIf="submitted && f['scheduledDate'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['scheduledDate'].errors['required']">Scheduled Date is required</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <label class="form-label">Completed Date</label>
+                                <input formControlName="completedDate" type="date" class="form-control"
+                                    [ngClass]="{'is-invalid': submitted && f['completedDate'].errors}">
+                                <div *ngIf="submitted && f['completedDate'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['completedDate'].errors['required']">Completed Date is required</div>
+                                </div>
+                            </div>
+                        </div> -->
+
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Send Request</button>
+                        </div>
+
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</section>
+<!-- end contact -->

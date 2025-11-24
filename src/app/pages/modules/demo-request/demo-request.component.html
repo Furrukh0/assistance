@@ -1,0 +1,445 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Demo Requests</h4>
+                <!-- <div class="flex-shrink-0">
+                    <div class="form-check form-switch form-switch-right form-switch-md">
+                        <label for="hover-rows-showcode" class="form-label text-muted">Show Code</label>
+                        <input class="form-check-input code-switcher" type="checkbox" id="hover-rows-showcode"
+                            (click)="ShowCode($event)">
+                    </div>
+                </div> -->
+                <div class="flex-shrink-0">
+                    <div class="hstack gap-3 flex-wrap">
+                        <a href="javascript:void(0);" class="btn btn-light btn-sm" (click)="resetFilters()">
+                             <i class="ri-filter-off-line align-bottom me-1"></i> Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <!-- Search -->
+                    <div class="col-md-3">
+                        <div class="search-box">
+                            <input type="text" class="form-control" placeholder="Search by name, email or address..."
+                                [(ngModel)]="searchText" (keyup)="onSearchChanged($event)" />
+                            <i class="ri-search-line search-icon"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-2 ms-auto">
+                        <!-- From Date -->
+                        <input type="text" class="form-control bg-light border-light" mwlFlatpickr
+                            [convertModelValue]="true" [maxDate]="fromDateMax || ''" data-date-format="d M, Y"
+                            placeholder="From date" [(ngModel)]="fromDate" (ngModelChange)="onFromDateChange($event)">
+                    </div>
+
+                    <div class="col-md-2 ms-auto">
+                        <!-- To Date -->
+                        <input type="text" class="form-control bg-light border-light" mwlFlatpickr
+                            [convertModelValue]="true" [minDate]="toDateMin || ''" data-date-format="d M, Y"
+                            placeholder="To date" [(ngModel)]="toDate" (ngModelChange)="onToDateChange($event)">
+                    </div>
+
+
+                    <!-- Filter dropdown -->
+                    <div class="col-md-2 ms-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-light border d-flex justify-content-between align-items-center w-100"
+                                type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ statusFilter == '' ? 'Status' : statusFilter }}
+                                <span class="dropdown-toggle ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="filterDropdown">
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onStatusFilterChanged('Completed')">Completed</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onStatusFilterChanged('Cancelled')">Cancelled</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onStatusFilterChanged('Pending')">Pending</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onStatusFilterChanged('InProgress')">InProgress</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-1 ms-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-light border d-flex justify-content-between align-items-center w-100"
+                                type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ selectedFilterLabel }}
+                                <span class="dropdown-toggle ms-2"></span>
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="filterDropdown">
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged(null)">All</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged(true)">Active</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0)"
+                                        (click)="onFilterChanged(false)">Inactive</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Reset button -->
+                    <div class="col-md-2 text-end">
+                        <button class="btn btn-light  w-100" (click)="searchDemoRequests()">
+                            <i class="ri-search-line align-bottom me-1"></i> Search </button>
+                    </div>
+                    <!-- <div class="col-md-2 text-end">
+                        <button class="btn btn-light  w-100" (click)="resetFilters()">
+                            <i class="ri-filter-off-line align-bottom me-1"></i> Reset
+                        </button>
+                    </div> -->
+                </div>
+                <div class="row g-3 align-items-right">
+
+                </div>
+
+            </div>
+            <div class="card-body">
+                <div class="live-preview">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="table-responsive mt-4 mt-xl-0">
+                                <table class="table table-hover table-striped align-middle table-nowrap mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Organization</th>
+                                            <th scope="col">Requested Date</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Assigned</th>
+                                            <th scope="col">Active</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(DemoRequests && DemoRequests.length > 0){
+                                        @for(demo of DemoRequests;track demo;let i = $index){
+                                        <tr>
+                                            <td class="fw-medium">{{i + 1}}</td>
+                                            <td>{{demo?.requesterName}}</td>
+                                            <td>{{demo?.requesterEmail}}</td>
+                                            <td>{{demo?.organizationName}}</td>
+                                            <td>{{demo?.requestedDate?.substring(0,10)}}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-success btn-sm dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" [ngClass]="{
+                                                            'btn-success' : demo?.status == 'Completed',
+                                                            'btn-danger' : demo?.status == 'Cancelled',
+                                                            'btn-info' : demo?.status == 'Pending',
+                                                            'btn-warning' : demo?.status == 'InProgress'
+                                                        }" aria-haspopup="true" aria-expanded="false">
+                                                        {{demo?.status}}
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item"
+                                                            (click)="UpdateStatus(demo.id,demo.status,'Pending')">Pending</a>
+                                                        <a class="dropdown-item"
+                                                            (click)="UpdateStatus(demo.id,demo.status,'Completed')">Completed</a>
+                                                        <a class="dropdown-item"
+                                                            (click)="UpdateStatus(demo.id,demo.status,'InProgress')">InProgress</a>
+                                                        <a class="dropdown-item"
+                                                            (click)="UpdateStatus(demo.id,demo.status,'Cancelled')">Cancelled</a>
+                                                    </div>
+                                                </div><!-- /btn-group -->
+                                            </td>
+                                            <td>
+                                                <!-- @if(!demo?.AssignedTo){
+                                                -
+                                                }@else {
+                                                    {{demo?.AssignedTo}}
+                                                } -->
+                                                <div class="btn-group">
+                                                    <button class="btn btn-light btn-sm dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        {{demo?.assignedUserName == "" ? 'Not Assigned' : demo?.assignedUserName }}
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        @for(assign of AssignedToList;track assign){
+                                                        <a class="dropdown-item"
+                                                            (click)="UpdateAssignTo(demo.id,assign.id,assign.email,assign.userName)">{{assign.userName}}</a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                        id="SwitchCheck1" [checked]="demo?.isActive" (change)="onActiveToggle(demo.id, $event)">
+                                                    <!-- <label class="form-check-label ms-2"
+                                                        for="SwitchCheck1">Yes/No</label> -->
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="hstack gap-3 flex-wrap">
+                                                    <a (click)="OpenModal(demoRequestModel,demo,false)"
+                                                        class="link-danger fs-15"><i class="ri-eye-line"></i></a>
+                                                    <a (click)="OpenModal(demoRequestModel,demo,true)"
+                                                        class="link-success fs-15"><i class="ri-edit-2-line"></i></a>
+                                                    <a (click)="DeleteDemoModal(deleteModal,demo)"
+                                                        class="link-danger fs-15"><i class="ri-delete-bin-line"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        }
+                                        }@else {
+                                        <tr>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                No Demo Requests found.
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!--end col-->
+                        @if(DemoRequests && DemoRequests.length > 0){
+                        <app-pagination [pageNumber]="pageNumber" [totalPages]="totalPages"
+                            (pageChange)="changePage($event)">
+                        </app-pagination>
+                        }
+                    </div><!--end row-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #demoRequestModel let-modal>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                DemoRequest
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                (click)="modal.dismiss('Cross click')"></button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="DemoRequestForm" (ngSubmit)="onSubmit()">
+                <div class="row g-3">
+
+                    <!-- Requester Name -->
+                    <div class="col-xxl-6">
+                        <label for="reqName" class="form-label">Requester Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" id="reqName" class="form-control" formControlName="requesterName"
+                            placeholder="Enter requester name"
+                            [ngClass]="{ 'is-invalid': hasError('requesterName','required') || hasError('requesterName','minlength') }">
+                        @if (hasError('requesterName','required')) {
+                        <div class="invalid-feedback">Requester name is required</div>
+                        }
+                        @if (hasError('requesterName','minlength')) {
+                        <div class="invalid-feedback">Minimum 3 characters</div>
+                        }
+                    </div>
+
+                    <!-- Organization Name -->
+                    <div class="col-xxl-6">
+                        <label for="orgName" class="form-label">Organization Name <span
+                                class="text-danger">*</span></label>
+                        <input type="text" id="orgName" class="form-control" formControlName="organizationName"
+                            placeholder="Enter organization name"
+                            [ngClass]="{ 'is-invalid': hasError('organizationName','required') }">
+                        @if (hasError('organizationName','required')) {
+                        <div class="invalid-feedback">Organization name is required</div>
+                        }
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-xxl-6">
+                        <label for="reqEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" id="reqEmail" class="form-control" formControlName="requesterEmail"
+                            placeholder="Enter email"
+                            [ngClass]="{ 'is-invalid': hasError('requesterEmail','required') || hasError('requesterEmail','email') }">
+                        @if (hasError('requesterEmail','required')) {
+                        <div class="invalid-feedback">Email is required</div>
+                        }
+                        @if (hasError('requesterEmail','email')) {
+                        <div class="invalid-feedback">Invalid email format</div>
+                        }
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-xxl-6">
+                        <label for="orgPhone" class="form-label">Phone <span class="text-danger">*</span></label>
+                        <input type="text" id="orgPhone" class="form-control" formControlName="requesterPhone"
+                            placeholder="Enter phone"
+                            [ngClass]="{ 'is-invalid': hasError('requesterPhone','required') || hasError('requesterPhone','pattern') }">
+                        @if (hasError('requesterPhone','required')) {
+                        <div class="invalid-feedback">Phone is required</div>
+                        }
+                        @if (hasError('requesterPhone','pattern')) {
+                        <div class="invalid-feedback">Invalid phone number</div>
+                        }
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="col-12">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea id="remarks" class="form-control" rows="2" formControlName="remarks"
+                            placeholder="Enter remarks"></textarea>
+                    </div>
+
+                    <!-- Meeting Link -->
+                    <div class="col-12">
+                        <label for="meetingLink" class="form-label">Meeting Link</label>
+                        <input type="text" id="meetingLink" class="form-control" formControlName="meetingLink"
+                            placeholder="Enter meeting link">
+                    </div>
+
+                    <!-- Requested Date -->
+                    <div class="col-xxl-4">
+                        <label for="requestedDate" class="form-label">Requested Date <span
+                                class="text-danger">*</span></label>
+                        <input type="datetime-local" id="requestedDate" class="form-control"
+                            formControlName="requestedDate"
+                            [ngClass]="{'is-invalid': hasError('requestedDate','required') || hasError('requestedDate','invalidDate')}">
+                        @if (hasError('requestedDate','required')) {
+                        <div class="invalid-feedback">Requested date is required</div>
+                        }
+                        @if (hasError('requestedDate','invalidDate')) {
+                        <div class="invalid-feedback">Invalid requested date</div>
+                        }
+                    </div>
+
+                    <!-- Scheduled Date -->
+                    <div class="col-xxl-4">
+                        <label for="scheduledDate" class="form-label">Scheduled Date</label>
+                        <input type="datetime-local" id="scheduledDate" class="form-control"
+                            formControlName="scheduledDate"
+                            [ngClass]="{'is-invalid': hasError('scheduledDate','invalidDate')}">
+                        @if (hasError('scheduledDate','invalidDate')) {
+                        <div class="invalid-feedback">Scheduled date cannot be before requested date</div>
+                        }
+                    </div>
+
+                    <!-- Completed Date -->
+                    <div class="col-xxl-4">
+                        <label for="completedDate" class="form-label">Completed Date</label>
+                        <input type="datetime-local" id="completedDate" class="form-control"
+                            formControlName="completedDate"
+                            [ngClass]="{'is-invalid': hasError('completedDate','invalidDate')}">
+                        @if (hasError('completedDate','invalidDate')) {
+                        <div class="invalid-feedback">Completed date cannot be before scheduled date</div>
+                        }
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-xxl-6">
+                        <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                        @if(isEditMode){
+                        <div class="btn-group w-100">
+                            <button class="btn btn-light dropdown-toggle w-100 text-start" type="button"
+                                id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                [ngClass]="{'is-invalid': hasError('status','required')}">
+                                {{ DemoRequestForm.get('status')?.value || 'Select Status' }}
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                        (click)="DemoRequestForm.get('status')?.setValue('Pending')">Pending</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                        (click)="DemoRequestForm.get('status')?.setValue('InProgress')">In Progress</a>
+                                </li>
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                        (click)="DemoRequestForm.get('status')?.setValue('Completed')">Completed</a>
+                                </li>
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                        (click)="DemoRequestForm.get('status')?.setValue('Cancelled')">Cancelled</a>
+                                </li>
+                            </ul>
+                        </div>
+                        }@else {
+                        <input type="text" id="status2" class="form-control" formControlName="status"
+                            placeholder="Enter Status" [ngClass]="{ 'is-invalid': hasError('status','required')}">
+                        }
+                        @if (hasError('status','required')) {
+                        <div class="invalid-feedback d-block">Status is required</div>
+                        }
+                    </div>
+
+                    <!-- Assigned To -->
+                    <div class="col-xxl-6">
+                        <label for="assignedTo" class="form-label">Assigned To <span
+                                class="text-danger">*</span></label>
+                        @if(isEditMode){
+                        <div class="btn-group w-100">
+                            <button class="btn btn-light dropdown-toggle w-100 text-start" type="button"
+                                id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                [ngClass]="{'is-invalid': hasError('assignedTo','required')}">
+                                {{ DemoRequestForm.get('assignedTo')?.value || 'Select Employee' }}
+                            </button>
+                            <ul class="dropdown-menu w-100" aria-labelledby="statusDropdown">
+                                @for(assign of AssignedToList;track assign){
+                                <li><a class="dropdown-item" href="javascript:void(0);"
+                                        (click)="DemoRequestForm.get('assignedTo')?.setValue(assign.userName)">{{assign.userName}}</a>
+                                </li>
+                                }
+                            </ul>
+                        </div>
+                        }@else {
+                        <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo"
+                            placeholder="Enter Employee" [ngClass]="{ 'is-invalid': hasError('assignedTo','required')}">
+                        }
+                        @if (hasError('status','required')) {
+                        <div class="invalid-feedback d-block">Status is required</div>
+                        }
+                        <!-- <input type="text" id="assignedTo" class="form-control" formControlName="assignedTo"
+                            placeholder="Enter assignee"
+                            [ngClass]="{ 'is-invalid': hasError('assignedTo','required') }">
+                        @if (hasError('assignedTo','required')) {
+                        <div class="invalid-feedback">Assignee is required</div>
+                        } -->
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            @if(isEditMode){
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Update</button>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+
+
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-body text-center p-5">
+        <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
+            colors="primary:#121331,secondary:#f06548" style="width:120px;height:120px">
+        </lord-icon>
+
+        <div class="mt-4">
+            <h4 class="mb-3">Are you sure?</h4>
+            <p class="text-muted mb-4">
+                Do you really want to delete <b>Demo Request by</b>{{DemoToDelete?.organizationName}} ?
+                This process cannot be undone.
+            </p>
+
+            <div class="hstack gap-2 justify-content-center">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal"
+                    (click)="modal.dismiss('Cross click')">Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="DeleteDemoRequest()">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
