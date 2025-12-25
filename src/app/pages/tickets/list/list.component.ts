@@ -39,6 +39,7 @@ export class ListComponent {
   usersList: any[] = [];
   filteredUsers: any[] = [];
   dropdownOpen = false;
+  TotalRecords! : number;
 
   // Drawer properties
   selectedTicket: any = null;
@@ -77,18 +78,19 @@ export class ListComponent {
       description: ['', [Validators.required]],
     });
 
-    this.store.dispatch(fetchTicketListData());
-    this.store.select(selectTicketLoading).subscribe((data) => {
-      if (data == false) {
-        document.getElementById('elmLoader')?.classList.add('d-none');
-      }
-    });
+    // this.store.dispatch(fetchTicketListData());
+    // this.store.select(selectTicketLoading).subscribe((data) => {
+    //   if (data == false) {
+    //     document.getElementById('elmLoader')?.classList.add('d-none');
+    //   }
+    // });
 
-    this.store.select(selectTicketData).subscribe((data) => {
-      this.lists = data;
-      this.alllists = cloneDeep(data);
-      this.lists = this.service.changePage(this.alllists)
-    });
+    // this.store.select(selectTicketData).subscribe((data) => {
+    //   this.lists = data;
+    //   this.alllists = cloneDeep(data);
+    //   this.lists = this.service.changePage(this.alllists)
+    // });
+    this.changePage();
   }
 
   num: number = 0;
@@ -246,7 +248,7 @@ export class ListComponent {
         // });
       }
     }
-     this.enableDisabledControls();
+    this.enableDisabledControls();
     setTimeout(() => {
       this.store.dispatch(fetchTicketListData());
     }, 2000);
@@ -296,12 +298,14 @@ export class ListComponent {
     };
   }
 
+
   performSearch(): void {
+    debugger
     const payload = this.buildPayload();
     document.getElementById('elmLoader')?.classList.remove('d-none');
     this.restApiService.getTicketData(payload).subscribe(
       (res: any) => {
-        const rawData = res.data || [];
+        const rawData = res.data.data || [];
         this.searchResults = rawData.map((item: any) => ({
           id: item.id,
           title: item.title,
@@ -315,6 +319,7 @@ export class ListComponent {
           description: item.description,
           _id: item.id
         }));
+        this.TotalRecords = res.data.totalRecords;
         this.lists = this.service.changePage(this.searchResults);
         document.getElementById('elmLoader')?.classList.add('d-none');
       },
@@ -347,8 +352,66 @@ export class ListComponent {
     this.performSearch();
   }
 
+  private formatStatus(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'open': return 'Open';
+      case 'closed': return 'Closed';
+      case 'close': return 'Closed';
+      case 'inprogress': return 'Inprogress';
+      case 'in progress': return 'Inprogress';
+      case 'pending': return 'Inprogress';
+      case 'new': return 'New';
+      default: return status;
+    }
+
+  }
+
+  private formatPriority(priority: string): string {
+    switch (priority?.toLowerCase()) {
+      case 'high': return 'High';
+      case 'medium': return 'Medium';
+      case 'low': return 'Low';
+      default: return priority;
+    }
+  }
+
+  onPageChange(page: number) {
+    this.service.page = page;
+    this.changePage();
+  }
   changePage() {
-    this.performSearch();
+    // this.performSearch();
+    const payload = this.buildPayload().filter;
+    document.getElementById('elmLoader')?.classList.remove('d-none');
+    this.apiCallService.PostCall(payload, 'UserTicket/GetTickets').subscribe(
+      (res: any) => {
+        const rawData = res.data.data || [];
+        this.searchResults = rawData.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          client: item.client,
+          assigned: item.assignedTo,
+          create: item.createDate,
+          due: item.dueDate,
+          status: this.formatStatus(item.status),
+          priority: this.formatPriority(item.priority),
+          fileUrl: item.fileUrl,
+          description: item.description,
+          _id: item.id
+        }));
+        this.lists = this.searchResults;
+        this.alllists = cloneDeep(this.searchResults);
+        // this.lists = this.service.changePage(this.alllists);
+        this.TotalRecords = res.data.totalRecords;
+        console.log("list",this.lists);
+        console.log("all list",this.alllists);
+        document.getElementById('elmLoader')?.classList.add('d-none');
+      },
+      () => {
+        document.getElementById('elmLoader')?.classList.add('d-none');
+      }
+    );
+
   }
 
   onSort(column: any) {

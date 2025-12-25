@@ -183,13 +183,13 @@
                                 </td>
                                 <td (click)="viewTicket(data)">
                                     <ngb-highlight [result]="data.title" [term]="searchTerm"></ngb-highlight>
-                                </td >
+                                </td>
                                 <td (click)="viewTicket(data)">
                                     <ngb-highlight [result]="data.client" [term]="searchTerm"></ngb-highlight>
-                                </td >
+                                </td>
                                 <td (click)="viewTicket(data)">
                                     <ngb-highlight [result]="data.assigned" [term]="searchTerm"></ngb-highlight>
-                                </td >
+                                </td>
                                 <td (click)="viewTicket(data)">
                                     {{data.create | date:'shortDate'}}
                                 </td>
@@ -252,8 +252,11 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-content-end mt-2">
-                    <ngb-pagination [collectionSize]="alllists?.length" [(page)]="service.page"
+                    <!-- <ngb-pagination [collectionSize]="alllists?.length" [(page)]="service.page"
                         [pageSize]="service.pageSize" (pageChange)="changePage()">
+                    </ngb-pagination> -->
+                    <ngb-pagination [collectionSize]="TotalRecords" [page]="service.page"
+                        [pageSize]="service.pageSize" (pageChange)="onPageChange($event)">
                     </ngb-pagination>
                 </div>
             </div>
@@ -335,10 +338,10 @@
                 </a>
             </p>
         </div> -->
-    <div class="mb-4">
-        <label class="form-label fw-semibold text-muted">Work URL</label>
-        <input type="text" class="form-control" [(ngModel)]="selectedTicket.fileUrl" placeholder="Enter Work URL" />
-    </div>
+        <div class="mb-4">
+            <label class="form-label fw-semibold text-muted">Work URL</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedTicket.fileUrl" placeholder="Enter Work URL" />
+        </div>
         <!-- Status History (Optional) -->
         <div class="mb-4">
             <label class="form-label fw-semibold text-muted">Status History</label>
@@ -351,18 +354,18 @@
         </div>
 
         <!-- Action Buttons -->
-<div class="drawer-footer mt-4">
-    <div class="d-flex gap-2">
-        <button class="btn btn-primary flex-fill" (click)="updateWorkUrl()">
-            <i class="ri-save-line me-1"></i>
-            Update
-        </button>
-        <button class="btn btn-outline-secondary flex-fill" (click)="closeDrawer()">
-            <i class="ri-close-line me-1"></i>
-            Close
-        </button>
-    </div>
-</div>
+        <div class="drawer-footer mt-4">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-fill" (click)="updateWorkUrl()">
+                    <i class="ri-save-line me-1"></i>
+                    Update
+                </button>
+                <button class="btn btn-outline-secondary flex-fill" (click)="closeDrawer()">
+                    <i class="ri-close-line me-1"></i>
+                    Close
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 

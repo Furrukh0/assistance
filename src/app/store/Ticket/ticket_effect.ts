@@ -28,7 +28,7 @@ export class TicketEffects {
                 this.restApiService.getTicketData(this.payload).pipe(
                     map((Ticketlist) => {
                         // const Ticket = JSON.parse(Ticketlist).data;
-                        const Ticket = Ticketlist.data.map((item: any) => ({
+                        const Ticket = Ticketlist.data.data.map((item: any) => ({
                             id: item.id.toString(),
                             title: item.title,
                             client: item.client,
