@@ -15,8 +15,8 @@ const httpOptions = {
 export class ApiCallService {
 
     // private readonly baseRoute = "https://209.145.48.167:44385/api/";
-    private readonly baseRoute = "https://localhost:51346/api/";
-    // private readonly baseRoute = "https://154.38.171.150:44386/api/";
+    // private readonly baseRoute = "https://localhost:51346/api/";
+    private readonly baseRoute = "https://154.38.171.150:44386/api/";
 
     private token: string | null = "";
 
