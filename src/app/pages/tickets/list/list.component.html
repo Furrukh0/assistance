@@ -251,14 +251,13 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="d-flex justify-content-end mt-2">
-                    <!-- <ngb-pagination [collectionSize]="alllists?.length" [(page)]="service.page"
-                        [pageSize]="service.pageSize" (pageChange)="changePage()">
-                    </ngb-pagination> -->
-                    <ngb-pagination [collectionSize]="TotalRecords" [page]="service.page"
-                        [pageSize]="service.pageSize" (pageChange)="onPageChange($event)">
-                    </ngb-pagination>
-                </div>
+<!-- Pagination -->
+<div class="d-flex justify-content-end mt-2">
+    <ngb-pagination [collectionSize]="TotalRecords" [page]="service.page"
+        [pageSize]="service.pageSize" [maxSize]="5" [ellipses]="false" [rotate]="true"
+        (pageChange)="onPageChange($event)">
+    </ngb-pagination>
+</div>
             </div>
         </div>
 
